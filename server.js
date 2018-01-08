@@ -27,3 +27,7 @@ app.delete( '/user/:name', function ( req, res ) {
 app.use( function ( req, res ) {
     res.sendStatus( 404 )
 } )
+
+app.listen( port, function () {
+    console.log( 'Listening on port', port );
+} );
