@@ -24,15 +24,47 @@ app.get( '/users', function ( req, res ) {
 } )
 
 app.get( '/user/:name', function ( req, res ) {
-
+    if ( req.params.name ) {
+        let output = fs.readFileSync( './storage.json', 'utf-8' )
+        output = JSON.parse( output )
+        for ( let i = 0; i < output.length; i++ ) {
+            if ( output[ i ].name === req.params.name ) {
+                res.setHeader( 'Content-Type', 'text/json' );
+                res.send( output[ i ] )
+                return;
+            }
+        }
+    }
 } )
 
-app.post( '/user/:name', function ( req, res ) {
-
+app.post( '/user/edit/:name/:email/:state', function ( req, res ) {
+    if ( req.params.name && req.params.email && req.params.state ) {
+        let output = fs.readFileSync( './storage.json', 'utf-8' )
+        output = JSON.parse( output )
+        for ( let i = 0; i < output.length; i++ ) {
+            if ( output[ i ].name === req.params.name ) {
+                output[ i ].name = req.params.name
+                output[ i ].email = req.params.email
+                output[ i ].state = req.params.state
+                fs.writeFileSync( 'storage.json', JSON.stringify( output ) )
+                res.sendStatus( 200 )
+                return;
+            }
+        }
+    }
 } )
 
-app.post( '/user/:name', function ( req, res ) {
-
+app.post( '/user/delete/:name', function ( req, res ) {
+    let output = fs.readFileSync( './storage.json', 'utf-8' )
+    output = JSON.parse( output )
+    for ( let i = 0; i < output.length; i++ ) {
+        if ( output[ i ].name === req.params.name ) {
+            output.splice( i, 1 )
+            fs.writeFileSync( 'storage.json', JSON.stringify( output ) )
+            res.sendStatus( 200 )
+            return;
+        }
+    }
 } )
 
 app.use( function ( req, res ) {
