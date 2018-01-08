@@ -5,7 +5,17 @@ const port = process.env.PORT || 8000;
 
 
 app.post( '/create/:name/:email/:state', function ( req, res ) {
-
+    if ( req.params.name && req.params.email && req.params.state ) {
+        let output = fs.readFileSync( './storage.json', 'utf-8' )
+        output = JSON.parse( output )
+        output.push( {
+            name: req.params.name,
+            email: req.params.email,
+            state: req.params.state
+        } )
+        fs.writeFileSync( 'storage.json', JSON.stringify( output ) )
+        res.sendStatus( 200 )
+    }
 } )
 
 app.get( '/users', function ( req, res ) {
